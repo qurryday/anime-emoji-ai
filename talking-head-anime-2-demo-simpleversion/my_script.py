@@ -17,8 +17,8 @@ FRAME_RATE = 30.0
 DEVICE_NAME = 'cuda'
 device = torch.device(DEVICE_NAME)
 
-input_image_name = "./input/5.png"
-output_video_name = 'test_output_video.mp4'
+input_image_name = "./input/"
+output_gif_name = 'test_output_video.gif'
 
 images = []
 
@@ -63,6 +63,20 @@ p = [[0,0,0,0,0,0,0,0,0,0,0,0,0,-0.1,0,0],
      [0,0,0,0,0,0,0,0,0,0,0,0,-0.2,0,0],
      [0,0,0,0,0,0,0,0,0,0,0,0,-0.1,0,0],
      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],]
 
 def get_pose(ii):
@@ -105,11 +119,15 @@ def get_pose(ii):
 
 def main(inputdir, outputdir):
     i = 0
+    vidlist = []
     for f in os.listdir(inputdir):
-        generate_vid(inputdir + f, outputdir + "output_" + str(i) + ".mp4")
+        output_gif_name = outputdir + time.strftime("%Y-%m-%dT%H-%M-%S") + "_" + str(i) + ".gif"
+        generate_gif(inputdir + f, output_gif_name)
         i = i + 1
+        vidlist = vidlist + [output_gif_name]
+    return vidlist
 
-def generate_vid(input, output):
+def generate_gif(input, output):
     global torch_input_image
     pil_image = resize_PIL_image(extract_PIL_image_from_filelike(input))
     w, h = pil_image.size
@@ -129,26 +147,34 @@ def generate_vid(input, output):
             output_image = pytorch_image.detach().cpu()
             numpy_image = numpy.uint8(numpy.rint(convert_output_image_from_torch_to_numpy(output_image) * 255.0))
             # pil_image = PIL.Image.fromarray(numpy_image, mode='RGBA')
+            background = PIL.Image.new('RGBA', (256, 256), (255, 255, 255, 255))
             im = PIL.Image.fromarray(numpy_image)
+            im = PIL.Image.alpha_composite(background, im)
             im.save("./images/myIm" + str(i) + ".png")
+            images = images + [im]
 
-        import moviepy.video.io.ImageSequenceClip
-        import os
-        image_folder='./images'
-        fps=30
+        fps = 30
+        duration = int (1.0 / fps * 1000)
+        images[0].save(output, save_all=True, append_images=images, optimize=False, loop=0, duration=duration)
 
-        image_files = [os.path.join(image_folder,img)
-                    for img in os.listdir(image_folder)
-                    if img.endswith(".png")]
+        # import moviepy.video.io.ImageSequenceClip
+        # import os
+        # image_folder='./images'
+        # fps=30
+
+        # image_files = [os.path.join(image_folder,img)
+        #             for img in os.listdir(image_folder)
+        #             if img.endswith(".png")]
         
-        image_files.sort(key=lambda x:int((x.split('myIm')[1]).split('.')[0]))
-        clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files[:len(p)], fps=fps)
-        clip.write_videofile(output)
+        # image_files.sort(key=lambda x:int((x.split('myIm')[1]).split('.')[0]))
+        
+        # clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files[:len(p)], fps=fps)
+        # clip.write_videofile(output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # model args
     parser.add_argument('--input', type=str, default=input_image_name, help='input dir')
-    parser.add_argument('--out', type=str, default=output_video_name, help='output dir')
+    parser.add_argument('--out', type=str, default=output_gif_name, help='output dir')
     opt = parser.parse_args()
     main(opt.input, opt.out)

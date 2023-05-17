@@ -33,7 +33,6 @@ def initDir():
     # Clear output directories
     remove(sd_output_dir)
     remove(seg_output_dir)
-    remove(vid_output_dir)
 
 if __name__ == "__main__":
     # Parsing arguments

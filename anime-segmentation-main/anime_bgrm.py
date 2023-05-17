@@ -33,6 +33,23 @@ def get_mask(model, input_img, use_amp=True, s=640):
         pred = cv2.resize(pred.cpu().numpy().transpose((1, 2, 0)), (w0, h0))[:, :, np.newaxis]
         return pred
 
+def main(net='isnet_is', ckpt='saved_models/isnetis.ckpt', data='./inputimage', 
+         out='out', img_size=512, device='cuda', fp32=False, only_matted=False):
+    device = torch.device(device)
+
+    model = AnimeSegmentation.try_load(net, ckpt, device, img_size=img_size)
+    model.eval()
+    model.to(device)
+
+    if not os.path.exists(out):
+        os.mkdir(out)
+
+    for i, path in enumerate(tqdm(sorted(glob.glob(f"{data}/*.*")))):
+        img = cv2.cvtColor(cv2.imread(path, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+        mask = get_mask(model, img, use_amp=not fp32, s=img_size)
+        img = np.concatenate((mask * img + 1 - mask, mask * 255), axis=2).astype(np.uint8)
+        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
+        cv2.imwrite(f'{out}/{i:06d}.png', img)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -58,18 +75,4 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     print(opt)
 
-    device = torch.device(opt.device)
-
-    model = AnimeSegmentation.try_load(opt.net, opt.ckpt, opt.device, img_size=opt.img_size)
-    model.eval()
-    model.to(device)
-
-    if not os.path.exists(opt.out):
-        os.mkdir(opt.out)
-
-    for i, path in enumerate(tqdm(sorted(glob.glob(f"{opt.data}/*.*")))):
-        img = cv2.cvtColor(cv2.imread(path, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-        mask = get_mask(model, img, use_amp=not opt.fp32, s=opt.img_size)
-        img = np.concatenate((mask * img + 1 - mask, mask * 255), axis=2).astype(np.uint8)
-        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
-        cv2.imwrite(f'{opt.out}/{i:06d}.png', img)
+    main(opt.net, opt.ckpt, opt.data, opt.out, opt.img_size, opt.device, opt.fp32, opt.only_matted)

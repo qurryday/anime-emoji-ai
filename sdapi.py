@@ -28,6 +28,8 @@ def main(output_dir, batch_size, user_prompt=""):
 
     count = 0
 
+    imglist = []
+
     for i in r['images']:
         image = Image.open(io.BytesIO(base64.b64decode(i.split(",",1)[0])))
 
@@ -42,6 +44,8 @@ def main(output_dir, batch_size, user_prompt=""):
         image.save(image_name, pnginfo=pnginfo)
         print("Saved as " + image_name)
         count = count + 1
+        imglist = imglist + [image]
+    return imglist
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

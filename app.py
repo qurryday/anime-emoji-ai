@@ -6,7 +6,7 @@ import sdapi
 sys.path.insert(1, ".\\anime-segmentation-main\\")
 sys.path.insert(1, ".\\talking-head-anime-2-demo-simpleversion\\")
 import anime_bgrm
-import my_script
+import face_script
 
 main_dir = os.getcwd()
 sd_script_dir = main_dir + "\stable-diffusion-api\\"
@@ -45,10 +45,14 @@ def generate_gifs(text_input, skin_color, eye_color, hair_color, hair_style, acc
     clearDir()
     os.chdir(main_dir)
     text_input = "white background, " + text_input
-    skin_color = skin_color + " skin, "
-    eye_color = eye_color + " eyes, "
-    hair_color = hair_color + " hair, "
-    hair_style = hair_style + " hair, "
+    if skin_color != "":
+        skin_color = skin_color + " skin, "
+    if eye_color != "":
+        eye_color = eye_color + " eyes, "
+    if hair_color != "": 
+        hair_color = hair_color + " hair, "
+    if hair_style != "":
+        hair_style = hair_style + " hair, "
     accessories_text = ""
     for i in accessories:
         accessories_text = accessories_text + i + ", "
@@ -56,7 +60,7 @@ def generate_gifs(text_input, skin_color, eye_color, hair_color, hair_style, acc
     os.chdir(seg_script_dir)
     anime_bgrm.main(data=seg_input_dir, out=seg_output_dir)
     os.chdir(vid_script_dir)
-    return my_script.main(vid_input_dir, vid_output_dir)
+    return face_script.main(vid_input_dir, video_input, vid_output_dir)
 
 # def load_model(path, net_name, img_size):
 #     # 如果需要load model(stable diffusion, anime_rmbg),参考sd modelloader.py, webui.py，anime anime_bgrm.py
@@ -69,7 +73,7 @@ def generate_gifs(text_input, skin_color, eye_color, hair_color, hair_style, acc
 def generate_imgs(text_input):
     return sdapi.main("output/stable-diffusion/", 2, text_input)
 
-app = gr.Blocks()
+app = gr.Blocks(css="./css.css")
 with app:
     # text input that has cap of 75 characters
     text_input = Textbox(lines=3, placeholder="Type Enter your text (max 75 characters)...")
@@ -94,7 +98,7 @@ with app:
 
     # input video and output generated GIFs
     with gr.Row():
-        video_input = Video()
+        video_input = Video(elem_classes="video-preview")
         # define outputs of images
         output_gifs = gr.Gallery(label="Generated Gifs")
     btn = gr.Button(value="Generate", variant="primary")

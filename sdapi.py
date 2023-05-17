@@ -17,7 +17,7 @@ def main(output_dir, batch_size, user_prompt=""):
     payload = {
         "sd_model_checkpoint": "momoke-e.ckpt [18bcc837a2]",
         "prompt": user_prompt,
-        "styles": ["avatar", "general"],
+        "styles": ["general", "avatar"],
         "steps": 20, 
         "batch_size": batch_size
     }

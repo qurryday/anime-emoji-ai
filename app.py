@@ -9,7 +9,6 @@ import anime_bgrm
 import face_script
 
 main_dir = os.getcwd()
-sd_script_dir = main_dir + "\stable-diffusion-api\\"
 sd_output_dir = main_dir + "\output\stable-diffusion\\"
 
 seg_script_dir = main_dir + "\\anime-segmentation-main\\"
@@ -30,7 +29,6 @@ def checkDir(dir):
 
 def clearDir():
     # Make sure output dir exists
-    checkDir(sd_script_dir)
     checkDir(sd_output_dir)
     checkDir(seg_script_dir)
     checkDir(seg_output_dir)

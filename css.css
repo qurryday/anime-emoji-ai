@@ -1,8 +1,8 @@
 .video-preview {
-    max-height: 360px;
+    max-height: 400px;
 }
 
 video {
-    max-height: 360px;
+    max-height: 400px;
     object-fit: cover
 }

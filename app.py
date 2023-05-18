@@ -44,7 +44,6 @@ def clearDir():
 def generate_gifs(text_input, skin_color, eye_color, hair_color, hair_style, accessories, video_input):
     clearDir()
     os.chdir(main_dir)
-    text_input = "white background, " + text_input
     if skin_color != "":
         skin_color = skin_color + " skin, "
     if eye_color != "":

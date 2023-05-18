@@ -16,8 +16,9 @@ def main(output_dir, batch_size, user_prompt=""):
 
     payload = {
         "sd_model_checkpoint": "momoke-e.ckpt [18bcc837a2]",
-        "prompt": user_prompt,
-        "styles": ["general", "avatar"],
+        "prompt": "(white background: 1.3), " + user_prompt + "(masterpiece: 1.3), (face front: 1.2), facing to viewer, close up, center, best quality, official art, (extremely detailed CG unity 8k wallpaper: 1.3), illustration, solo, upper body, face in center, (looking at viewer: 1.2), portrait",
+        "negative_prompt": "bad anatomy, lowres, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, bad anatomy,extra digt, bad feet,NSFW, side face, black background, from side",
+        "styles": [],
         "steps": 20, 
         "batch_size": batch_size
     }

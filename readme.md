@@ -28,10 +28,10 @@ Run Stable Diffusion Web UI by webui-user.bat.
 
 Then, run app.py from termial.
 
-#### Helpful links: 
-
-For more information:
+#### More information:
 https://www.calvinzqiu.com/animoji
+
+#### Helpful links: 
 
 [Google Drive Folder](https://drive.google.com/drive/folders/1eJQkC4WhZyMDjB0IBZWSqvKjO0KHLaP4?usp=sharing)
 

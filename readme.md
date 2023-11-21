@@ -30,8 +30,9 @@ Then, run app.py from termial.
 
 #### Helpful links: 
 
+For more information:
+https://www.calvinzqiu.com/animoji
+
 [Google Drive Folder](https://drive.google.com/drive/folders/1eJQkC4WhZyMDjB0IBZWSqvKjO0KHLaP4?usp=sharing)
 
 [Model: momoke-e.ckpt](https://huggingface.co/LarryAIDraw/momoko-e/tree/main)
-
-[Github Repo](https://github.com/srjsissel/anime-emoji-ai)   
